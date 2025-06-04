@@ -1,0 +1,25 @@
+﻿{% load static %}
+{% extend 'Base/Base.html'%}
+{% block content %}
+<form method="post">
+	<div class="border p-3 mt-4">
+		<div class="row pb-2">
+			<h2 class="text-primary">Write Your Review</h2>
+			<hr />
+		</div>
+		<input id="game_id" class="form-control" type="hidden" value="{ game_id }"/>
+		<div class="mb-3">
+			<label id="grade"></label>
+			<input id="grade" type="number" min="1" max="5" class="form-control" />
+		</div>
+		<div class="mb-3">
+			<label id="text"></label>
+			<input id="text" class="form-control" rows="3"/>
+		</div>
+		<button type="submit" class="btn btn-primary" style="width:150px">Add</button>
+		<a src="{ None }" class="btn btn-secondary" style="width:150px">
+			Back to Game Page
+		</a>
+	</div>
+</form>
+{% endblock %}

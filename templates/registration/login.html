@@ -1,0 +1,23 @@
+{% extends 'base/base.html' %}
+{%block title%}Log In{%endblock%}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="container mt-5">
+        <!-- Login form -->
+        {% if not request.user.is_authenticated%}
+        <form class="col-5 mx-left card p-3 shadow-lg" method="post" enctype="multipart/form-data">
+            <h1 style="text-align: center;" class="text-primary">Login</h1>
+
+            {% csrf_token %}  <!-- CSRF token for security -->
+
+            {{form|crispy}}
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+        {% else %}
+        <div class="col-5 mx-left card p-3 shadow-lg">
+            <h1 class="text-info">You are already log in!</h1>
+        </div>
+            
+        {% endif %}
+    </div>
+{% endblock %}

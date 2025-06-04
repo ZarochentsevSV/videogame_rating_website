@@ -1,0 +1,56 @@
+﻿{% extends 'base/base.html' %}
+{%block title%}{{user.username}}'s profile{%endblock%}
+{% block content %}
+<div class="container-fluid border border-primary rounded bg-dark">
+	<div class="row">
+		<div class="col-md-9 ">
+			<h3>
+				Profile
+			</h3>
+			<p>
+				ID: {{user.id}}
+			</p>
+			<p>
+				Email: {{user.email}}
+			</p>
+			<p>
+				First {{user.first_name}}
+			</p>
+			<p>
+				Last Name: {{user.last_name}}
+			</p>
+			<p>
+				Your Birthday: {{user.profile.day_of_birth}}
+			</p>
+			<p>
+				Phone Number: {{None}}
+			</p>
+			<p>
+				Registration Date: @ViewBag.User.RegistrationDate
+			</p>
+			<p>
+				User Name: {{user.username}}
+			</p>
+		</div>
+	</div>
+	<h2>Reviews</h2>
+				@foreach(var obj in ViewBag.UserReviews)
+				{
+						<div class="card text-white bg-secondary mb-3" style="max-width: 20rem;">
+							<div class="card-header">@obj.UserName</div>
+							<div class="card-body">
+							<h4 class="card-title">Review grade: @obj.ReviewGrade</h4>
+							<p class="card-text">@obj.ReviewText</p>
+							<div class="row row-cols-2 m-1">
+							<div class="col">
+								<a asp-controller="Games" asp-action="DeleteYourReview" asp-route-id="@obj.ReviewId"class="btn btn-danger mx-2"> <i class="bi bi-trash-fill"></i> Delete your review</a>
+							</div>
+							<div class="col">
+								<a asp-controller="Games" asp-action="EditYourReview" asp-route-id="@obj.ReviewId" class="btn btn-primary mx-2"> <i class="bi bi-pencil-square"></i> Edit your review</a>
+							</div>
+						</div>
+							</div>
+						</div>	
+				}
+</div>
+{% endblock content %}

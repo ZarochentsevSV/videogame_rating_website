@@ -1,0 +1,30 @@
+﻿@model Review
+
+<form method="post" asp-action="EditYourReview">
+	<div class="border p-3 mt-4">
+		<div class="row pb-2">
+			<h2 class="text-primary">Edit Your Review</h2>
+			<hr />
+		</div>
+		@*<div asp-validation-summary="All"></div>*@
+		<input asp-for="@Model.ReviewDate"  type="hidden"/>
+		<input asp-for="@Model.UserID"  type="hidden"/>
+		<input asp-for="@Model.UserName"  type="hidden"/>
+		<input asp-for="@Model.ReviewId"  type="hidden"/>
+		<input asp-for="@Model.GameId"  type="hidden"/>
+		<div class="mb-3">
+			<label asp-for="ReviewGrade"></label>
+			<input asp-for="@Model.ReviewGrade" class="form-control" />
+			<span asp-validation-for="ReviewGrade" class="text-danger"></span>
+		</div>
+		<div class="mb-3">
+			<label asp-for="ReviewText"></label>
+			<input asp-for="@Model.ReviewText" class="form-control" rows="3"/>
+			<span asp-validation-for="ReviewText" class="text-danger"></span>
+		</div>
+		<button type="submit" class="btn btn-primary" style="width:150px">Edit</button>
+		<a asp-controller="Games" asp-action="Page" asp-route-id="@Model.GameId" class="btn btn-secondary" style="width:150px">
+			Back to Game Page
+		</a>
+	</div>
+</form>

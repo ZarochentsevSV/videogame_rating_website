@@ -1,0 +1,13 @@
+﻿{% extends 'Base/Base.html' %}
+{% load crispy_forms_tags %}
+{%block title%}Game Form{%endblock%}
+{% block content %}
+<center><h1 class="text-primary">Add Game</h1></center>
+<div class="container border p-3 mt-4">
+   <form method="post" class="jumbotron mb-3" enctype="multipart/form-data">
+       {% csrf_token %}
+       {{form|crispy}}
+       <input type="submit" value="Apply" class="btn btn-success">
+   </form>
+</div>
+{% endblock %}

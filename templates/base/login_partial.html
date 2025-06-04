@@ -1,0 +1,26 @@
+<ul class="navbar-nav">
+@if (SignInManager.IsSignedIn(User))
+{
+    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Hello @User.Identity?.Name!</a>
+	<div class="dropdown-menu dropdown-menu-end">
+        <a asp-controller="User" asp-action="Page" class="dropdown-item" style="width:150px">Your Page</a>
+		<a class="dropdown-item " asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Manage Account</a>
+		
+		<div class="dropdown-divider">
+        </div>
+		@*<a class="dropdown-item" href="#">Separated link</a>*@
+        <form  class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+            <button  type="submit" class=" btn btn-link">Logout</button>
+        </form>
+	</div>
+}
+else
+{
+    <li class="nav-item">
+        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Register</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login"><i class="bi bi-box-arrow-right"></i>Login</a>
+    </li>
+}
+</ul>
