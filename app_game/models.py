@@ -11,21 +11,29 @@ class Developer(models.Model):
     name = models.CharField(max_length = 128, unique=True)
     date_modified = models.DateTimeField(auto_now=True)
     date_published = models.DateTimeField(auto_now_add=True)
+    def __unicode__(self):
+        return 'developer'
 
 class Publisher(models.Model):
     name = models.CharField(max_length = 128, unique=True)
     date_modified = models.DateTimeField(auto_now=True)
     date_published = models.DateTimeField(auto_now_add=True)
+    def __unicode__(self):
+        return 'publisher'
 
 class Platform(models.Model):
     name = models.CharField(max_length = 128, unique=True)
     date_modified = models.DateTimeField(auto_now=True)
     date_published = models.DateTimeField(auto_now_add=True)
+    def __unicode__(self):
+        return 'platform'
 
 class Genre(models.Model):
     name = models.CharField(max_length = 128, unique=True)
     date_modified = models.DateTimeField(auto_now=True)
     date_published = models.DateTimeField(auto_now_add=True)
+    def __unicode__(self):
+        return u'genre'
 
 class Game(models.Model):
     name = models.CharField(max_length=128, unique=True)

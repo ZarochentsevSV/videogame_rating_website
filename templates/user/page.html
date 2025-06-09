@@ -3,10 +3,14 @@
 {% block content %}
 <div class="container-fluid border border-primary rounded bg-dark">
 	<div class="row">
-		<div class="col-md-9 ">
+		<div class="col-md-3 p-1">
+			<img class="rounded img-fluid" src="/media/{{user.profile.avatar}}"  />
+		</div>
+		<div class="col-md-9 p-1">
 			<h3>
 				Profile
 			</h3>
+			<img>
 			<p>
 				ID: {{user.id}}
 			</p>

@@ -21,20 +21,28 @@ class Home(View):
         context = {}
         return render(request,  'home/index.html', context)
 
+class ExtraContext(object):
+    extra_context = {}
+    _object_context = {}
 
-class GameBaseView(View):
-    model = Game
-    fields = '__all__'
-    success_url = reverse_lazy('Game:all')
+    def get_context_data(self, **kwargs):
+        context = super(ExtraContext, self).get_context_data(**kwargs)
+        context.update(self.extra_context)
+        context.update(self._object_context)
+        return context
 
-class GameListView(ListView):
+
+class GameBase(ExtraContext):
     model = Game
+    #form_class = GenreForm
+    _object_context = {'object_type': 'genre'}
+
+class GameListView(GameBase, ListView):
     template_name = 'game/game_list.html'
     context_object_name='games'
 
-class GameDetailView(TemplateView):
+class GameDetailView(GameBase, TemplateView):
     '''CBV return game page'''
-    model = Game
     template_name = 'game/game_detail.html'
     def get(self, request, pk, *args, **kwargs):
         game = get_object_or_404(Game, id=pk)
@@ -70,189 +78,163 @@ class GameSearchView(View):
     #     context['current_user_review'] = Review.objects.filter(game=pk, user=get_user_model())
     #     return context
 
-class GameCreateView(UserPassesTestMixin, CreateView):
+class GameCreateView(GameBase, UserPassesTestMixin, CreateView):
     def test_func(self):
         return self.request.user.is_superuser
-    model = Game
     form_class = GameForm
     template_name = 'game/game_form.html'
     success_url = reverse_lazy('game_list')
 
-class GameUpdateView(UserPassesTestMixin, UpdateView):
+class GameUpdateView(GameBase, UserPassesTestMixin, UpdateView):
     def test_func(self):
         return self.request.user.is_superuser
-    model = Game
     form_class = GameForm
     template_name = 'game/game_form.html'
     success_url = reverse_lazy('game_list')
 
-class GameDeleteView(UserPassesTestMixin, DeleteView):
+class GameDeleteView(GameBase, UserPassesTestMixin, DeleteView):
     def test_func(self):
         return self.request.user.is_superuser
-    model = Game
-    form_class = GameForm
     template_name = 'game/game_confirm_delete.html'
     success_url = reverse_lazy('game_list')
 
 
 #------genres views--------
 
-class GenreBaseView(View):
-    model = Genre
-    form_class = GenreForm
-    fields = '__all__'
-    success_url = reverse_lazy('genres:all')
 
-class GenreListView(ListView):
+class GenreBase(ExtraContext):
     model = Genre
-    template_name = 'genre/genre_list.html'
+    #form_class = GenreForm
+    _object_context = {'object_type': 'genre'}
+
+class GenreListView(GenreBase, ListView):
+    template_name = 'unified_templates/unified_list.html'
     context_object_name='genres'
 
-class GenreDetailView(DetailView):
+class GenreDetailView(GenreBase, DetailView):
     model = Genre
     template_name = 'genre/genre_detail.html'
 
-class GenreCreateView(UserPassesTestMixin, CreateView):
+class GenreCreateView(GenreBase, UserPassesTestMixin, CreateView):
     def test_func(self):
         return self.request.user.is_superuser
-    model = Genre
     form_class = GenreForm
-    template_name = 'genre/genre_form.html'
+    template_name = 'unified_templates/unified_form.html'
     success_url = reverse_lazy('genre_list')
 
-class GenreUpdateView(UserPassesTestMixin, UpdateView):
+class GenreUpdateView(GenreBase, UserPassesTestMixin, UpdateView):
     def test_func(self):
         return self.request.user.is_superuser
-    model = Genre
     form_class = GenreForm
-    template_name = 'genre/genre_form.html'
+    template_name = 'unified_templates/unified_form.html'
     success_url = reverse_lazy('genre_list')
 
-class GenreDeleteView(UserPassesTestMixin, DeleteView):
+class GenreDeleteView(GenreBase, UserPassesTestMixin, DeleteView):
     def test_func(self):
         return self.request.user.is_superuser
-    model = Genre
-    template_name = 'genre/genre_confirm_delete.html'
+    template_name = 'unified_templates/unified_confirm_delete.html'
     success_url = reverse_lazy('genre_list')
 
 #----------Developer Views----------
 
-class DeveloperBaseView(View):
+class DeveloperBase(ExtraContext):
     model = Developer
-    form_class = DeveloperForm
-    fields = '__all__'
-    success_url = reverse_lazy('developers:all')
-
-class DeveloperListView(ListView):
-    model = Developer
-    template_name = 'developer/developer_list.html'
+    #form_class = DeveloperForm
+    _object_context = {'object_type': 'developer'}
+    
+class DeveloperListView(DeveloperBase, ListView):
+    template_name = 'unified_templates/unified_list.html'
     context_object_name='developers'
 
-class DeveloperDetailView(DetailView):
-    model = Developer
-    template_name = 'developer/developer_detail.html'
+class DeveloperDetailView(DeveloperBase, DetailView):
+    template_name = 'unified_templates/unified_detail.html'
 
-class DeveloperCreateView(UserPassesTestMixin, CreateView):
+class DeveloperCreateView(DeveloperBase, UserPassesTestMixin, CreateView):
     def test_func(self):
         return self.request.user.is_superuser
-    model = Developer
     form_class = DeveloperForm
-    template_name = 'developer/developer_form.html'
+    template_name = 'unified_templates/unified_form.html'
     success_url = reverse_lazy('developer_list')
 
-class DeveloperUpdateView(UserPassesTestMixin, UpdateView):
+class DeveloperUpdateView(DeveloperBase, UserPassesTestMixin, UpdateView):
     def test_func(self):
         return self.request.user.is_superuser
-    model = Developer
     form_class = DeveloperForm
-    template_name = 'developer/developer_form.html'
+    template_name = 'unified_templates/unified_form.html'
     success_url = reverse_lazy('developer_list')
 
-class DeveloperDeleteView(UserPassesTestMixin, DeleteView):
+class DeveloperDeleteView(DeveloperBase, UserPassesTestMixin, DeleteView):
     def test_func(self):
         return self.request.user.is_superuser
-    model = Developer
-    template_name = 'developer/developer_confirm_delete.html'
+    template_name = 'unified_templates/unified_confirm_delete.html'
     success_url = reverse_lazy('developer_list')
 
 #-----------Publisher Views------------
 
-class PublisherBaseView(View):
+class PublisherBase(ExtraContext):
     model = Publisher
-    form_class = PublisherForm
-    fields = '__all__'
-    success_url = reverse_lazy('publishers:all')
+    #form_class = PublisherForm
+    _object_context = {'object_type': 'publisher'}
 
-class PublisherListView(ListView):
-    model = Publisher
-    template_name = 'publisher/publisher_list.html'
-    context_object_name='publishers'
+class PublisherListView(PublisherBase, ListView):
+    template_name = 'unified_templates/unified_list.html'
 
-class PublisherDetailView(DetailView):
+class PublisherDetailView(PublisherBase, DetailView):
     model = Publisher
     template_name = 'publisher/publisher_detail.html'
 
-class PublisherCreateView(UserPassesTestMixin, CreateView):
+class PublisherCreateView(PublisherBase, UserPassesTestMixin, CreateView):
     def test_func(self):
         return self.request.user.is_superuser
-    model = Publisher
     form_class = PublisherForm
-    template_name = 'publisher/publisher_form.html'
+    template_name = 'unified_templates/unified_form.html'
     success_url = reverse_lazy('publisher_list')
 
-class PublisherUpdateView(UserPassesTestMixin, UpdateView):
+class PublisherUpdateView(PublisherBase, UserPassesTestMixin, UpdateView):
     def test_func(self):
         return self.request.user.is_superuser
-    model = Publisher
     form_class = PublisherForm
-    template_name = 'publisher/publisher_form.html'
+    template_name = 'unified_templates/unified_form.html'
     success_url = reverse_lazy('publisher_list')
 
-class PublisherDeleteView(UserPassesTestMixin, DeleteView):
+class PublisherDeleteView(PublisherBase, UserPassesTestMixin, DeleteView):
     def test_func(self):
         return self.request.user.is_superuser
-    model = Publisher
-    template_name = 'publisher/publisher_confirm_delete.html'
+    template_name = 'unified_templates/unified_confirm_delete.html'
     success_url = reverse_lazy('publisher_list')
 
 #---------Platform Views----------
 
-class PlatformBaseView(View):
+class PlatformBase(ExtraContext):
     model = Platform
-    form_class = PlatformForm
-    fields = '__all__'
-    success_url = reverse_lazy('platforms:all')
+    #form_class = PlatformForm
+    _object_context = {'object_type': 'platform'}
 
-class PlatformListView(ListView):
-    model = Platform
-    template_name = 'platform/platform_list.html'
+class PlatformListView(PlatformBase, ListView):
+    template_name = 'unified_templates/unified_list.html'
     context_object_name='platforms'
 
-class PlatformDetailView(DetailView):
-    model = Platform
-    template_name = 'platform/platform_detail.html'
+class PlatformDetailView(PlatformBase, DetailView):
+    template_name = 'unified_templates/unified_detail.html'
 
-class PlatformCreateView(UserPassesTestMixin, CreateView):
+class PlatformCreateView(PlatformBase, UserPassesTestMixin, CreateView):
     def test_func(self):
         return self.request.user.is_superuser
-    model = Platform
     form_class = PlatformForm
-    template_name = 'platform/platform_form.html'
+    template_name = 'unified_templates/unified_form.html'
     success_url = reverse_lazy('platform_list')
 
-class PlatformUpdateView(UserPassesTestMixin, UpdateView):
+class PlatformUpdateView(PlatformBase, UserPassesTestMixin, UpdateView):
     def test_func(self):
         return self.request.user.is_superuser
-    model = Platform
     form_class = PlatformForm
-    template_name = 'platform/platform_form.html'
+    template_name = 'unified_templates/unified_form.html'
     success_url = reverse_lazy('platform_list')
 
-class PlatformDeleteView(UserPassesTestMixin, DeleteView):
+class PlatformDeleteView(PlatformBase, UserPassesTestMixin, DeleteView):
     def test_func(self):
         return self.request.user.is_superuser
-    model = Platform
-    template_name = 'platform/platform_confirm_delete.html'
+    template_name = 'unified_templates/unified_confirm_delete.html'
     success_url = reverse_lazy('platform_list')
 
 
