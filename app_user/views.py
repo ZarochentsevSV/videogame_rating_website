@@ -38,6 +38,12 @@ class ProfileDetail(View):
             'user': user,
             }
         return render(request, template, context)
+
+class Privacy(View):
+    def get(self, request, *args, **kwargs):
+        template = 'user/privacy.html'
+        context = {}
+        return render(request, template, context)
 # # Define a view function for the login page
 # class LoginView(View):
 #     def get(self, request):
