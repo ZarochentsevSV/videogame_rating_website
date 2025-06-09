@@ -8,28 +8,27 @@ from django.contrib.auth import get_user_model
 
 
 class Developer(models.Model):
-    name = models.CharField(max_length = 128)
+    name = models.CharField(max_length = 128, unique=True)
     date_modified = models.DateTimeField(auto_now=True)
     date_published = models.DateTimeField(auto_now_add=True)
 
 class Publisher(models.Model):
-    name = models.CharField(max_length = 128)
+    name = models.CharField(max_length = 128, unique=True)
     date_modified = models.DateTimeField(auto_now=True)
     date_published = models.DateTimeField(auto_now_add=True)
 
 class Platform(models.Model):
-    short_name = models.CharField(max_length = 32)
-    name = models.CharField(max_length = 128)
+    name = models.CharField(max_length = 128, unique=True)
     date_modified = models.DateTimeField(auto_now=True)
     date_published = models.DateTimeField(auto_now_add=True)
 
 class Genre(models.Model):
-    name = models.CharField(max_length = 128)
+    name = models.CharField(max_length = 128, unique=True)
     date_modified = models.DateTimeField(auto_now=True)
     date_published = models.DateTimeField(auto_now_add=True)
 
 class Game(models.Model):
-    name = models.CharField(max_length=128)
+    name = models.CharField(max_length=128, unique=True)
     description = models.CharField(max_length=512)
     image = models.ImageField(upload_to='images/', blank=True, null=True, default="", verbose_name='Image')
     release_date = models.DateField()

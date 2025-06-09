@@ -13,10 +13,9 @@
                 <div class="col-md-10 mb-4">
                     <h5>{{game.name}}</h5>
                     <p>
-                        {{game.description}}
+                        {{game.description|striptags|linebreaksbr}}
                     </p>
-
-                    <a class="btn btn-primary" href="{% url 'game_detail' 'game.id' %}">Page</button>
+                    <a class="btn btn-primary" href="{% url 'game_detail' game.id %}">Page</a>
                 </div>
             </div>
         {% empty %}
@@ -76,27 +75,26 @@
                             {{game.id}}
                         </td>
                         <td width="35%">
-                            <a href="{% url 'game_detail' 'game.id' %}">{{game.name}}</a>
+                            <a href="{% url 'game_detail' game.id %}">{{game.name}}</a>
                             
                         </td>
                         <td width="10%">
                             {{game.release_date}}
                         </td>
                         <td width="10%">
-                            {{game.developers}}
+                            {% for developer in game.developers.all%} {{developer.name}} {% endfor %}
                         </td>
                         <td width="10%">
-                            {{game.publishers}}
-                        </td>
+                            {% for publisher in game.publishers.all%} {{publisher.name}} {% endfor %}
                         <td width="5%">
                             {{game.age_rating}}
                         </td>
                         <td>
                             <div class="w-75 btn-group" role="group">
-                                <a href="{% url 'game_update' 'game.id' %}"
-                                class="btn btn-primary mx-2"> <i class="bi bi-pencil-square"></i> Edit</a>
-                                <a href="{% url 'game_delete' 'game.id' %}"
-                                class="btn btn-danger mx-2"> <i class="bi bi-trash-fill"></i> Delete</a>
+                                <a href="{% url 'game_update' game.id %}"
+                                class="btn btn-primary "> <i class="bi bi-pencil-square"></i> Edit</a>
+                                <a href="{% url 'game_delete' game.id %}"
+                                class="btn btn-danger "> <i class="bi bi-trash-fill"></i> Delete</a>
                             </div>
                         </td>
                     </tr>

@@ -7,6 +7,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import TemplateView, View
 from django.contrib.auth import get_user_model
+from django.contrib.auth.mixins import UserPassesTestMixin
 import random as rand
 from .models import *
 from .forms import *
@@ -29,7 +30,7 @@ class GameBaseView(View):
 class GameListView(ListView):
     model = Game
     template_name = 'game/game_list.html'
-    context_object_name='genres'
+    context_object_name='games'
 
 class GameDetailView(TemplateView):
     '''CBV return game page'''
@@ -41,7 +42,8 @@ class GameDetailView(TemplateView):
             context = {}
             if self.request.user.is_authenticated:
                 user_id = self.request.user.id
-                context['current_user_review'] = Review.objects.filter(game=pk, user=user_id).first()
+                # user_review = Review.objects.filter(game=pk, user=user_id).first()
+                # context['current_user_review'] = user_review if user_review else None
             else:
                 context['current_user_review'] = None
             context['game'] = game
@@ -68,19 +70,25 @@ class GameSearchView(View):
     #     context['current_user_review'] = Review.objects.filter(game=pk, user=get_user_model())
     #     return context
 
-class GameCreateView(CreateView):
+class GameCreateView(UserPassesTestMixin, CreateView):
+    def test_func(self):
+        return self.request.user.is_superuser
     model = Game
     form_class = GameForm
     template_name = 'game/game_form.html'
     success_url = reverse_lazy('game_list')
 
-class GameUpdateView(UpdateView):
+class GameUpdateView(UserPassesTestMixin, UpdateView):
+    def test_func(self):
+        return self.request.user.is_superuser
     model = Game
     form_class = GameForm
     template_name = 'game/game_form.html'
     success_url = reverse_lazy('game_list')
 
-class GameDeleteView(DeleteView):
+class GameDeleteView(UserPassesTestMixin, DeleteView):
+    def test_func(self):
+        return self.request.user.is_superuser
     model = Game
     form_class = GameForm
     template_name = 'game/game_confirm_delete.html'
@@ -104,19 +112,25 @@ class GenreDetailView(DetailView):
     model = Genre
     template_name = 'genre/genre_detail.html'
 
-class GenreCreateView(CreateView):
+class GenreCreateView(UserPassesTestMixin, CreateView):
+    def test_func(self):
+        return self.request.user.is_superuser
     model = Genre
     form_class = GenreForm
     template_name = 'genre/genre_form.html'
     success_url = reverse_lazy('genre_list')
 
-class GenreUpdateView(UpdateView):
+class GenreUpdateView(UserPassesTestMixin, UpdateView):
+    def test_func(self):
+        return self.request.user.is_superuser
     model = Genre
     form_class = GenreForm
     template_name = 'genre/genre_form.html'
     success_url = reverse_lazy('genre_list')
 
-class GenreDeleteView(DeleteView):
+class GenreDeleteView(UserPassesTestMixin, DeleteView):
+    def test_func(self):
+        return self.request.user.is_superuser
     model = Genre
     template_name = 'genre/genre_confirm_delete.html'
     success_url = reverse_lazy('genre_list')
@@ -138,19 +152,25 @@ class DeveloperDetailView(DetailView):
     model = Developer
     template_name = 'developer/developer_detail.html'
 
-class DeveloperCreateView(CreateView):
+class DeveloperCreateView(UserPassesTestMixin, CreateView):
+    def test_func(self):
+        return self.request.user.is_superuser
     model = Developer
     form_class = DeveloperForm
     template_name = 'developer/developer_form.html'
     success_url = reverse_lazy('developer_list')
 
-class DeveloperUpdateView(UpdateView):
+class DeveloperUpdateView(UserPassesTestMixin, UpdateView):
+    def test_func(self):
+        return self.request.user.is_superuser
     model = Developer
     form_class = DeveloperForm
     template_name = 'developer/developer_form.html'
     success_url = reverse_lazy('developer_list')
 
-class DeveloperDeleteView(DeleteView):
+class DeveloperDeleteView(UserPassesTestMixin, DeleteView):
+    def test_func(self):
+        return self.request.user.is_superuser
     model = Developer
     template_name = 'developer/developer_confirm_delete.html'
     success_url = reverse_lazy('developer_list')
@@ -172,19 +192,25 @@ class PublisherDetailView(DetailView):
     model = Publisher
     template_name = 'publisher/publisher_detail.html'
 
-class PublisherCreateView(CreateView):
+class PublisherCreateView(UserPassesTestMixin, CreateView):
+    def test_func(self):
+        return self.request.user.is_superuser
     model = Publisher
     form_class = PublisherForm
     template_name = 'publisher/publisher_form.html'
     success_url = reverse_lazy('publisher_list')
 
-class PublisherUpdateView(UpdateView):
+class PublisherUpdateView(UserPassesTestMixin, UpdateView):
+    def test_func(self):
+        return self.request.user.is_superuser
     model = Publisher
     form_class = PublisherForm
     template_name = 'publisher/publisher_form.html'
     success_url = reverse_lazy('publisher_list')
 
-class PublisherDeleteView(DeleteView):
+class PublisherDeleteView(UserPassesTestMixin, DeleteView):
+    def test_func(self):
+        return self.request.user.is_superuser
     model = Publisher
     template_name = 'publisher/publisher_confirm_delete.html'
     success_url = reverse_lazy('publisher_list')
@@ -206,19 +232,25 @@ class PlatformDetailView(DetailView):
     model = Platform
     template_name = 'platform/platform_detail.html'
 
-class PlatformCreateView(CreateView):
+class PlatformCreateView(UserPassesTestMixin, CreateView):
+    def test_func(self):
+        return self.request.user.is_superuser
     model = Platform
     form_class = PlatformForm
     template_name = 'platform/platform_form.html'
     success_url = reverse_lazy('platform_list')
 
-class PlatformUpdateView(UpdateView):
+class PlatformUpdateView(UserPassesTestMixin, UpdateView):
+    def test_func(self):
+        return self.request.user.is_superuser
     model = Platform
     form_class = PlatformForm
     template_name = 'platform/platform_form.html'
     success_url = reverse_lazy('platform_list')
 
-class PlatformDeleteView(DeleteView):
+class PlatformDeleteView(UserPassesTestMixin, DeleteView):
+    def test_func(self):
+        return self.request.user.is_superuser
     model = Platform
     template_name = 'platform/platform_confirm_delete.html'
     success_url = reverse_lazy('platform_list')
@@ -236,19 +268,25 @@ class ReviewDetailView(DetailView):
     model = Review
     template_name = 'review/review_detail.html'
 
-class ReviewCreateView(CreateView):
+class ReviewCreateView(UserPassesTestMixin, CreateView):
+    def test_func(self):
+        return self.request.user.is_superuser
     model = Review
     form_class = ReviewForm
     template_name = 'review/review_form.html'
     success_url = reverse_lazy('review_list')
 
-class ReviewUpdateView(UpdateView):
+class ReviewUpdateView(UserPassesTestMixin, UpdateView):
+    def test_func(self):
+        return self.request.user.is_superuser
     model = Review
     form_class = ReviewForm
     template_name = 'review/review_form.html'
     success_url = reverse_lazy('review_list')
 
-class ReviewDeleteView(DeleteView):
+class ReviewDeleteView(UserPassesTestMixin, DeleteView):
+    def test_func(self):
+        return self.request.user.is_superuser
     model = Review
     template_name = 'review/review_confirm_delete.html'
     success_url = reverse_lazy('review_list')

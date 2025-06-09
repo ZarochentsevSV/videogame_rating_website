@@ -13,7 +13,7 @@
 						<h3 class="">{{game.name}}</h3>
 					</div>		
 					<div >
-						<p>Release date: {{game.release_date}}</p>
+						<p>Release date: {{game.release_date|date:"d/m/Y"}}</p>
 					</div>
 					<div>
 						<p>Genre(s): {% for genre in game.genres.all%}{{genre.name}} {% endfor %}</p>
@@ -37,7 +37,7 @@
 					Description:
 				</p>
 				<p>
-					{{game.description}}
+					{{game.description|striptags|linebreaksbr}}
 				</p>
 			</div>
 			
@@ -48,7 +48,7 @@
 				Review score
 			</h2>
 			<p>
-				{{rating}}
+				{{rating|floatformat}}
 			</p>
 			<div class="progress m-1">
 				<div class="progress-bar bg-warning" role="progressbar" style="width: 75%;" aria-valuenow="{{rating}}" aria-valuemin="0" aria-valuemax="10"></div>

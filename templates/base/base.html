@@ -26,9 +26,9 @@
 							<a class="nav-link text-dark" href="{% url 'game_list'%}">Games</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link text-dark">Privacy</a>
+							<a class="nav-link text-dark" href="{% url 'privacy'%}">Privacy</a>
 						</li>
-						
+						{% if user.is_superuser%}
 							<li class="nav-item">
 								<a class="nav-link text-dark" >Review Moderation</a>
 							</li>
@@ -36,7 +36,7 @@
 							<li class="nav-item">
 								<a class="nav-link text-dark" >User Management</a>
 							</li>
-						
+						{% endif %}
 						
 					</ul>
 					<form  class="d-flex" method="get">
