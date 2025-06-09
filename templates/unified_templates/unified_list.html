@@ -1,35 +1,35 @@
 {% extends 'base/base.html' %}
-{%block title%}Genre List{%endblock%}
+{%block title%}{{object_type|title}}s List{%endblock%}
 {% block content %}
 <div class="container p-3">
     <div class="row pt-4">
         <div class="col-6">
-            <h2 class="text-primary">Genres List</h2>
+            <h2 class="text-primary">{{object_type|title}}s List</h2>
         </div>
         {% if user.is_superuser%}
         <div class="col-6 text-end">
-            <a href="{% url 'genre_create' %}" class="btn btn-success">
-            <i class="bi bi-plus-circle"></i> &nbsp; Add Genre
+            <a href="{% url object_type|lower|add:'_create' %}" class="btn btn-success">
+            <i class="bi bi-plus-circle"></i> &nbsp; Add {{object|title}}
             </a>
         </div>
         {% endif %}
     </div>
     <br /><br />
     <div class="container-fluid">
-      {% for genre in genres %}
+      {% for obj in object_list %}
       
         <div class="row rounded border border-primary bg-dark m-1">
             <div class="col-md-10 mb-1">
-                <h5>{{ genre.name }}</h5>
+                <h5>{{ obj.name }}</h5>
             </div>
             {% if user.is_superuser%}
             <div class="col-md-2 mr-2 position-relative btn-group">
-                <a class="btn btn-info btn-lg" href="{% url 'genre_detail' genre.pk %}">
+                <a class="btn btn-info btn-lg" href="{% url object_type|lower|add:'_detail' obj.pk %}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info" viewBox="0 0 16 16">
                         <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
                     </svg>
                 </a>
-                <a class="btn btn-danger btn-lg" href="{% url 'genre_delete' genre.pk %}">
+                <a class="btn btn-danger btn-lg" href="{% url object_type|lower|add:'_delete' obj.pk %}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
                         <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
                         <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>

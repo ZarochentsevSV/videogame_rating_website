@@ -1,14 +1,14 @@
 {% extends 'base/base.html' %}
-{%block title%}Platform Details{%endblock%}
+{%block title%}{{object_type|title}} Details{%endblock%}
 {% block content %}
 <div class="container-fluid">
     <div class="rounded border border-primary bg-dark m-1 p-1">
 
     
-        <h1>{{ platform.name }}</h1>
-        <p>Date of last modification: {{ platform.date_modified }}</p>
-        <p>Date of adding: {{ platform.date_published }}</p>
-        <a href="{% url 'platform_update' platform.pk %}">
+        <h1>{{ object.name }}</h1>
+        <p>Date of last modification: {{ object.date_modified }}</p>
+        <p>Date of adding: {{ object.date_published }}</p>
+        <a href="{% url object_type|lower|add:'_update' object.pk %}">
             <button class="btn btn-success btn-lg  mb-1">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
                     <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
@@ -16,7 +16,7 @@
                 </svg>
             </button>
         </a>
-        <a href="{% url 'platform_delete' platform.pk %}">
+        <a href="{% url object_type|lower|add:'_delete' object.pk %}">
             <button class="btn btn-danger btn-lg mb-1">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
                     <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
