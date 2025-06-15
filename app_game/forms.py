@@ -1,5 +1,11 @@
 from django import forms
 from .models import *
+from django.forms.widgets import CheckboxSelectMultiple
+from django.forms.models import ModelMultipleChoiceField
+
+class CustomSelectMultiple(ModelMultipleChoiceField):
+    def label_from_instance(self, obj):
+        return "%s" %(obj.name)
 
 class GameForm(forms.ModelForm):
     #genres = forms.ModelChoiceField(queryset=Genre.objects.all(), required=True, to_field_name="name")
@@ -13,10 +19,10 @@ class GameForm(forms.ModelForm):
     )
     age_rating = forms.ChoiceField(choices=age_options)
     description = forms.CharField(widget=forms.Textarea(attrs={"rows":"5"}))
-    genres = forms.MultipleChoiceField(choices=Genre.objects.values_list('id', 'name'))
-    developers  = forms.MultipleChoiceField(choices=Developer.objects.values_list('id', 'name'))
-    platforms = forms.MultipleChoiceField(choices=Platform.objects.values_list('id', 'name'))
-    publishers = forms.MultipleChoiceField(choices=Publisher.objects.values_list('id', 'name'))
+    genres = CustomSelectMultiple(widget=forms.CheckboxSelectMultiple, queryset=Genre.objects.all())
+    platforms = CustomSelectMultiple(widget=forms.CheckboxSelectMultiple, queryset=Platform.objects.all())
+    publishers = CustomSelectMultiple(widget=forms.CheckboxSelectMultiple, queryset=Publisher.objects.all())
+    developers  = CustomSelectMultiple(widget=forms.CheckboxSelectMultiple, queryset=Developer.objects.all())
     release_date =  forms.DateField(widget=forms.DateInput(format="%Y-%m-%d", attrs={"type": "date"}),input_formats=["%Y-%m-%d"]) 
     image = forms.ImageField()
     class Meta:
@@ -35,7 +41,6 @@ class GameForm(forms.ModelForm):
         ]
         widgets={
             'description': forms.Textarea(),
-            'developers': forms.Select(),
             'platforms': forms.Select(),
             'publishers': forms.Select()
         }

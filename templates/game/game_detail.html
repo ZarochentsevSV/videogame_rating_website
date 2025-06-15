@@ -11,7 +11,12 @@
 				<div class="col-md-8">
 					<div>
 						<h3 class="">{{game.name}}</h3>
-					</div>		
+					</div>
+					{% if user.is_superuser %}
+						<div >
+							<p>ID: {{game.id}}</p>
+						</div>
+					{% endif %}		
 					<div >
 						<p>Release date: {{game.release_date|date:"d/m/Y"}}</p>
 					</div>
@@ -43,14 +48,29 @@
 			
 		</div>
 		<div class="col-md-3">
+			{% if user.is_superuser%}
+				<div class="container border border-primary rounded bg-dark ">
+					<div class="p-1">
+						<h2 style="text-align: center;">Game Management</h2>
+						<div class="w-100 btn-group" role="group">
+							<a href="{% url 'game_update' game.id %}"
+							class="btn btn-primary "> <i class="bi bi-pencil-square"></i> Edit</a>
+							<a href="{% url 'game_delete' game.id %}"
+							class="btn btn-danger "> <i class="bi bi-trash-fill"></i> Delete</a>
+						</div>
+					</div>
+
+				</div>
+			{% endif %}
 			<div class="container border border-primary rounded bg-dark ">
-				<div class="">
+				<div class="p-1">
 					<h2 style="text-align: center;">
 						Review score
 					</h2>
 					<h3 style="text-align: center;">
 						{{rating|floatformat}}
 					</h3>
+					
 				</div>
 				
 				<!-- <div class="progress m-1">
@@ -59,7 +79,7 @@
 			</div>
 			<div class="container border border-primary rounded bg-dark mt-1">
 				{%if current_user_review == None%}
-					<div class="">
+					<div class="p-1">
 						<a class="btn btn-success mx-2" href="{% url 'review_create' game.id %}"> <i class="bi bi-pencil-square"></i> Wright your review</a>
 					</div>
 				{% else %}
