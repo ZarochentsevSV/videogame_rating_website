@@ -7,8 +7,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import TemplateView, View
 from django.contrib.auth import get_user_model
-from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
-from app_user.util import is_banned, is_admin, is_editor, is_user
+from app_user.util import IsInStaffCheckMixin, IsUserAllowedCheckMixin
 
 import random as rand
 from .models import *
@@ -17,13 +16,6 @@ import logging
 
 logger = logging.getLogger(__name__)
 # secondary classes
-class IsInStaffCheckMixin(LoginRequiredMixin, UserPassesTestMixin):
-    def test_func(self):
-        return is_admin(self.request.user)|is_editor(self.request.user)
-
-class IsUserAllowedCheckMixin(LoginRequiredMixin, UserPassesTestMixin):
-    def test_func(self):
-        return not is_banned(self.request.user)
 
 class ExtraContext(object):
     extra_context = {}
