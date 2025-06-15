@@ -55,6 +55,16 @@ urlpatterns = [
     path('publisher/<int:pk>/update/', PublisherUpdateView.as_view(), name='publisher_update'),
     path('publisher/<int:pk>/delete/', PublisherDeleteView.as_view(), name='publisher_delete'),
 
+    #review urls
+    path('review/<int:game_id>/write/', ReviewCreateView.as_view(), name="review_create"),
+    path('review/<int:game_id>/edit/', ReviewUpdateView.as_view(), name="review_update"),
+    path('review/<int:game_id>', ReviewDetailView.as_view(), name='review_detail'),
+    path('review/<int:game_id>/remove', ReviewDeleteView.as_view(), name='review_delete'),
+
+    #review moderation
+    path('reviews/<int:pk>/', ReviewDetailView.as_view(), name='management_review_detail'),
+
+
     #other urls
 
 ] 

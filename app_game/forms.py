@@ -94,7 +94,10 @@ class ReviewForm(forms.ModelForm):
         ('10','10')
     )
     grade = forms.ChoiceField(choices=grade_options)
+    #text = forms.TextField()
+    #platform = forms.MultipleChoiceField(choices=Game.objects.values_list('id', 'name'))
     class Meta:
+        model = Review
         fields=[
             'text',
             'grade'

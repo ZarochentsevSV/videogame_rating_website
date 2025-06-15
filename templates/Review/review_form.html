@@ -1,0 +1,17 @@
+﻿{% extends 'base/base.html' %}
+{% load crispy_forms_tags %}
+{%block title%}Review Form{%endblock%}
+{% block content %}
+<center><h1>Add Review</h1></center>
+<div class="container-fluid ">
+    <div class="rounded border border-primary bg-dark m-1 p-1">
+        <form method="post" class="jumbotron mb-3">
+            {% csrf_token %}
+            {{form|crispy}}
+            <input id="game_id" name="game_id" value="{{game_id}}" type="hidden">
+            <input type="submit" value="Submit" class="btn btn-success">
+        </form>
+    </div>
+   
+</div>
+{% endblock %}

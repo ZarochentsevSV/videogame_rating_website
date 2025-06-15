@@ -24,8 +24,8 @@ urlpatterns = [
     path('register/', RegistrationView.as_view(), name='registration_page'),  # Registration page
     #path('profile/', None, name='current_user_profile'),
     path('profile/<str:username>', ProfileDetail.as_view(), name='user_profile'),
-    path("login/", auth_views.LoginView.as_view(), name="login"),
-    path("logout/", auth_views.LogoutView.as_view(), name="logout"),
-    path("privasy/",Privacy.as_view(), name="privacy"),
+    path("accounts/login/", auth_views.LoginView.as_view(), name="login"),
+    path("accounts/logout/", auth_views.LogoutView.as_view(), name="logout"),
+    path("privacy/",Privacy.as_view(), name="privacy"),
 
 ] 

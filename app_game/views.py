@@ -1,5 +1,5 @@
-
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
+from django.contrib import messages
 from django.urls import reverse, reverse_lazy
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic.list import ListView
@@ -7,7 +7,8 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import TemplateView, View
 from django.contrib.auth import get_user_model
-from django.contrib.auth.mixins import UserPassesTestMixin
+from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
+
 import random as rand
 from .models import *
 from .forms import *
@@ -50,12 +51,14 @@ class GameDetailView(GameBase, TemplateView):
             context = {}
             if self.request.user.is_authenticated:
                 user_id = self.request.user.id
-                # user_review = Review.objects.filter(game=pk, user=user_id).first()
-                # context['current_user_review'] = user_review if user_review else None
+                user_review = Review.objects.filter(game__id=pk, user__id=user_id).first()
+                context['current_user_review'] = user_review if user_review else None
             else:
                 context['current_user_review'] = None
             context['game'] = game
-            context['reviews'] = Review.objects.filter(game=pk)
+            reviews = Review.objects.filter(game__id=pk)
+            context['reviews'] = reviews
+            context['rating'] = float(sum(i.grade for i in reviews))/float(reviews.count())
             return render(request, self.template_name, context)
         return reverse_lazy('game_list')
 
@@ -63,11 +66,13 @@ class GameSearchView(View):
     '''This CBV finds game data by title, release date, publisher, developer, platform, genre
     
     Return filtered game list'''
-    template = 'game/search.html'
+    template = 'game/game_list.html'
     def get(self, request, *args, **kwargs):
         context = {}
-
-
+        name = self.request.GET.get('title')
+        print(name)
+        games = Game.objects.filter(name__icontains = str(name))
+        context['games'] = games
         return render(request, self.template, context)
     
     # def get_context_data(self, **kwargs):
@@ -158,7 +163,7 @@ class DeveloperCreateView(DeveloperBase, UserPassesTestMixin, CreateView):
 
 class DeveloperUpdateView(DeveloperBase, UserPassesTestMixin, UpdateView):
     def test_func(self):
-        return self.request.user.is_superuser
+        return self.request.user.groups
     form_class = DeveloperForm
     template_name = 'unified_templates/unified_form.html'
     success_url = reverse_lazy('developer_list')
@@ -241,34 +246,84 @@ class PlatformDeleteView(PlatformBase, UserPassesTestMixin, DeleteView):
 #----------Reveiw views--------------
 
 
-class ReviewListView(ListView):
-    model = Review
-    template_name = 'review/review_list.html'
-    context_object_name='reviews'
+# class ReviewListView(View):
+#     def get(self, re)
+#     model = Review
+#     template_name = 'review/review_list.html'
+#     context_object_name='reviews'
 
 class ReviewDetailView(DetailView):
     model = Review
     template_name = 'review/review_detail.html'
 
-class ReviewCreateView(UserPassesTestMixin, CreateView):
-    def test_func(self):
-        return self.request.user.is_superuser
+class ReviewCreateView(LoginRequiredMixin, View):
+
+    def get(self, request, game_id, *args, **kwargs):
+        context = {}
+        context['form'] = ReviewForm
+        context['game_id'] = game_id
+        return render(request, self.template_name, context)
+    
+    def post(self, request, *args, **kwargs):
+        user_id = request.user.id
+        game_id = request.POST.get('game_id')
+        text = request.POST.get('text')
+        grade = request.POST.get('grade')
+        game = Game.objects.get(id=game_id)
+        user = get_user_model().objects.get(id=user_id)
+        #platform = request.POST.get('platform')
+        if not (Review.objects.filter(user__id=user_id, game__id=game_id).exists()):
+            review = Review(user=user, game=game, text=text, grade=grade)
+            review.save()
+        else:
+            messages.info(request, "You are already write review")
+
+        return HttpResponseRedirect(reverse('game_detail', args=(game_id)))
     model = Review
     form_class = ReviewForm
     template_name = 'review/review_form.html'
     success_url = reverse_lazy('review_list')
 
-class ReviewUpdateView(UserPassesTestMixin, UpdateView):
-    def test_func(self):
-        return self.request.user.is_superuser
+class ReviewUpdateView(LoginRequiredMixin, View):
+    def get(self, request, game_id, *args, **kwargs):
+        user_id = request.user.id
+        review = Review.objects.filter(user__id=user_id, game__id=game_id).first()
+        if not Review.objects.filter(user__id=user_id, game__id=game_id).exists():
+            return HttpResponseNotFound("<h1>Data not found.</h1>")
+        context = {}
+        context['form'] = ReviewForm(instance=review)
+        context['review'] = review
+        context['game_id'] = game_id
+        return render(request, self.template_name, context)
+    
+    def post(self, request, *args, **kwargs):
+        game_id = request.POST.get('game_id')
+        user_id = request.user.id
+        review = Review.objects.filter(user__id=user_id, game__id=game_id).first()
+        if not Review.objects.filter(user__id=user_id, game__id=game_id).exists():
+            return HttpResponseNotFound("<h1>Data not found.</h1>")
+        form = ReviewForm(request.POST, instance=review)
+        if not form.is_valid():
+            return HttpResponseNotFound("<h1>Data not found.</h1>")
+        form.save()
+        return HttpResponseRedirect(reverse('game_detail', args=(game_id)))
     model = Review
     form_class = ReviewForm
     template_name = 'review/review_form.html'
     success_url = reverse_lazy('review_list')
 
-class ReviewDeleteView(UserPassesTestMixin, DeleteView):
-    def test_func(self):
-        return self.request.user.is_superuser
+class ReviewDeleteView(LoginRequiredMixin, View):
+    def get(self, request, game_id, *args, **kwargs):
+        context = {}
+        context['game_id'] = game_id
+        return render(request, self.template_name, context)
+    
+    def post(self, request, *args, **kwargs):
+        user_id = request.user.id
+        game_id = request.POST.get('game_id')
+        review = Review.objects.filter(user__id = user_id, game__id = game_id)
+        review.delete()
+        return HttpResponseRedirect(reverse('game_detail', args=(game_id)))
     model = Review
     template_name = 'review/review_confirm_delete.html'
     success_url = reverse_lazy('review_list')
