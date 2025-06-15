@@ -16,19 +16,19 @@
 						<p>Release date: {{game.release_date|date:"d/m/Y"}}</p>
 					</div>
 					<div>
-						<p>Genre(s): {% for genre in game.genres.all%}{{genre.name}} {% endfor %}</p>
+						<p>Genre{{game.genres.all|length|pluralize}}: {% for genre in game.genres.all%}{{genre.name}} {% endfor %}</p>
 					</div>
 					<div>
-						<p>Platform(s): {% for platform in game.platforms.all%}{{platform.name}} {% endfor %}</p>
+						<p>Platform{{game.platforms.all|length|pluralize}}: {% for platform in game.platforms.all%}{{platform.name}} {% endfor %}</p>
 					</div>
 					<div>
 						<p>Age rating: {{game.age_rating}}</p>
 					</div>
 					<div>
-						<p>Developer(s): {% for developer in game.developers.all%}{{developer.name}} {% endfor %}</p>
+						<p>Developer{{game.developer.all|length|pluralize}}: {% for developer in game.developers.all%}{{developer.name}} {% endfor %}</p>
 					</div>
 					<div>
-						<p>Publisher(s): {% for publisher in game.publishers.all%}{{publisher.name}} {% endfor %}</p>
+						<p>Publisher{{game.publishers.all|length|pluralize}}: {% for publisher in game.publishers.all%}{{publisher.name}} {% endfor %}</p>
 					</div>
 				</div>
 			</div>
@@ -43,32 +43,29 @@
 			
 		</div>
 		<div class="col-md-3">
-			<div class="container border border-primary rounded bg-dark">
-			<h2>
-				Review score
-			</h2>
-			<p>
-				{{rating|floatformat}}
-			</p>
-			<div class="progress m-1">
-				<div class="progress-bar bg-warning" role="progressbar" style="width: 75%;" aria-valuenow="{{rating}}" aria-valuemin="0" aria-valuemax="10"></div>
-			</div>
+			<div class="container border border-primary rounded bg-dark ">
+				<div class="">
+					<h2 style="text-align: center;">
+						Review score
+					</h2>
+					<h3 style="text-align: center;">
+						{{rating|floatformat}}
+					</h3>
+				</div>
+				
+				<!-- <div class="progress m-1">
+					<div class="progress-bar bg-warning" role="progressbar" style="width: 75%;" aria-valuenow="{{rating}}" aria-valuemin="0" aria-valuemax="10"></div>
+				</div> -->
 			</div>
 			<div class="container border border-primary rounded bg-dark mt-1">
 				{%if current_user_review == None%}
-				@if (!ViewBag.IsReviewCreated)
-				{
 					<div class="">
-						<a class="btn btn-success mx-2"> <i class="bi bi-pencil-square"></i> Wright your review</a>
+						<a class="btn btn-success mx-2" href="{% url 'review_create' game.id %}"> <i class="bi bi-pencil-square"></i> Wright your review</a>
 					</div>
-				}
 				{% else %}
-				{
-					<h2> Your review</h2>
+					<h2 style="text-align: center;"> Your review</h2>
 					<div class="card text-white bg-success mb-3" style="max-width: 20rem;">
-						<div class="card-header">
-							@ViewBag.UserReview.UserName
-						</div>
+						<div class="card-header">{{current_user_review.user.username}}</div>
 						<div class="card-body">
 							<h4 class="card-title">Review grade: {{current_user_review.grade}}</h4>
 							<p class="card-text">{{current_user_review.text}}</p>
@@ -76,34 +73,33 @@
 					
 						<div class="row row-cols-2 m-1">
 							<div class="col">
-								<a class="btn btn-danger mx-2"> <i class="bi bi-trash-fill"></i> Delete your review</a>
+								<a class="btn btn-danger mx-2" href="{% url 'review_delete' game.id %}"> <i class="bi bi-trash-fill"></i> Delete your review</a>
 							</div>
 							<div class="col">
-								<a class="btn btn-primary mx-2"> <i class="bi bi-pencil-square"></i> Edit your review</a>
+								<a class="btn btn-primary mx-2" href="{% url 'review_update' game.id %}"> <i class="bi bi-pencil-square"></i> Edit your review</a>
 							</div>
 						</div>
 					</div>
-				}
 				{% endif %}
-				<h2>Reviews</h2>
+				<h2 style="text-align: center;">Reviews</h2>
 				{% for review in reviews %}
-					{% if something %}
+					{% if True %}
 						<div class="card text-white bg-secondary mb-3" style="max-width: 20rem;">
-							<div class="card-header">{{review.user_name}}</div>
+							<div class="card-header">{{review.user.username}}</div>
 							<div class="card-body">
 							<h4 class="card-title">{{review.grade}}</h4>
 							<p class="card-text">{{review.text}}</p>
-							@if (User.IsInRole(@GameMVCMain.Core.Constants.Roles.Admin) || User.IsInRole(@GameMVCMain.Core.Constants.Roles.Moderator))
-							{
+							{% if user.is_superuser%}
 								<div class="m-1">
 									<a asp-controller="Games" asp-action="DeleteUserReview" asp-route-id="@obj.ReviewId" class="btn btn-danger mx-2"> <i class="bi bi-trash-fill"></i> Delete Review</a>
 								</div>
-							}
+							{% endif %}
 							</div>
 						</div>	
 					
 					{% endif %}
-				
+				{% empty %}
+					<p>There are no reviews here.</p>
 				{% endfor %}
 			</div>
 		</div>

@@ -30,7 +30,7 @@
 				Phone Number: {{None}}
 			</p>
 			<p>
-				Registration Date: @ViewBag.User.RegistrationDate
+				Registration Date: {{user.date_joined}}
 			</p>
 			<p>
 				User Name: {{user.username}}
@@ -38,23 +38,22 @@
 		</div>
 	</div>
 	<h2>Reviews</h2>
-				@foreach(var obj in ViewBag.UserReviews)
-				{
-						<div class="card text-white bg-secondary mb-3" style="max-width: 20rem;">
-							<div class="card-header">@obj.UserName</div>
-							<div class="card-body">
-							<h4 class="card-title">Review grade: @obj.ReviewGrade</h4>
-							<p class="card-text">@obj.ReviewText</p>
-							<div class="row row-cols-2 m-1">
-							<div class="col">
-								<a asp-controller="Games" asp-action="DeleteYourReview" asp-route-id="@obj.ReviewId"class="btn btn-danger mx-2"> <i class="bi bi-trash-fill"></i> Delete your review</a>
-							</div>
-							<div class="col">
-								<a asp-controller="Games" asp-action="EditYourReview" asp-route-id="@obj.ReviewId" class="btn btn-primary mx-2"> <i class="bi bi-pencil-square"></i> Edit your review</a>
-							</div>
-						</div>
-							</div>
-						</div>	
-				}
+		{% for review in reviews %}
+			<div class="card text-white bg-secondary mb-3" style="max-width: 20rem;">
+				<div class="card-header">{{review.user.username}}</div>
+				<div class="card-body">
+				<h4 class="card-title">Review grade: {{review.grade}}</h4>
+				<p class="card-text">{{review.text}}</p>
+				<div class="row row-cols-2 m-1">
+				<div class="col">
+					<a href="{% url 'review_delete' review.game.id %}" class="btn btn-danger mx-2"> <i class="bi bi-trash-fill"></i> Delete your review</a>
+				</div>
+				<div class="col">
+					<a href="{% url 'review_update' review.game.id %}" class="btn btn-primary mx-2"> <i class="bi bi-pencil-square"></i> Edit your review</a>
+				</div>
+			</div>
+				</div>
+			</div>	
+		{% endfor %}
 </div>
 {% endblock content %}
