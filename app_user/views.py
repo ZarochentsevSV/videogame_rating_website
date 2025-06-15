@@ -21,7 +21,7 @@ import logging
 
 class RegistrationView(CreateView):
     form_class = UserRegistrationForm
-    success_url = reverse_lazy('login_page')
+    success_url = reverse_lazy('login')
     template_name = 'registration/signup.html'
 
 class CustomLoginView(LoginView):
@@ -31,7 +31,7 @@ class CustomLoginView(LoginView):
     def get_success_url(self):
         return reverse_lazy('home') 
 
-class ProfileDetail(UserPassesTestMixin, View):
+class ProfileDetail(LoginRequiredMixin, View):
     
     def get(self, request, username, *args, **kwargs):
         template = 'user/page.html'
